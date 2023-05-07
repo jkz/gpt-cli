@@ -46,7 +46,13 @@
         python = pkgs.python3.withPackages dependencies;
       in {
         packages = {
-          default = pkgs.callPackage ./derivation.nix { inherit dependencies; };
+          default = pkgs.python3Packages.buildPythonApplication {
+            pname = "gpt";
+            version = "1.0";
+            propagatedBuildInputs = dependencies pkgs.python3Packages;
+            src = ./.;
+            postInstall = "mv $out/bin/gpt.py $out/bin/gpt";
+          };
         };
 
         devShell = pkgs.mkShell {
